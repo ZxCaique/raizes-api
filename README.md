@@ -5,6 +5,25 @@ API REST desenvolvida em **Python** utilizando **FastAPI**, **SQLAlchemy** e **S
 O sistema permite o gerenciamento de clientes, produtos, categorias, unidades, estoque, pedidos, pagamentos, programa de fidelidade e autenticação via JWT.
 
 ---
+
+# 📂 Repositório
+
+O código-fonte deste projeto está disponível no GitHub:
+
+**Repositório:**  
+https://github.com/ZxCaique/raizes-api
+
+Para clonar o projeto:
+
+```bash
+git clone https://github.com/ZxCaique/raizes-api.git
+```
+
+Ou faça o download do projeto em formato ZIP diretamente pelo GitHub.
+
+---
+
+---
 # 📚 Tecnologias Utilizadas
 
 * Python 3.12
