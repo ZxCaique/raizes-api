@@ -1,21 +1,14 @@
-from sqlalchemy import Column, Integer, DateTime
 from datetime import datetime
 
-from app.core.database import Base
+from sqlalchemy.orm import Mapped, mapped_column
 
 
-class BaseModel(Base):
-    __abstract__ = True
+class BaseModel:
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
 
-    id = Column(Integer, primary_key=True, index=True)
+    created_at: Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
-    created_at = Column(
-        DateTime,
-        default=datetime.utcnow
-    )
-
-    updated_at = Column(
-        DateTime,
+    updated_at: Mapped[datetime] = mapped_column(
         default=datetime.utcnow,
         onupdate=datetime.utcnow
     )

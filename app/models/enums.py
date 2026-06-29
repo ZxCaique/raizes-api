@@ -7,6 +7,11 @@ class PerfilUsuario(str, Enum):
     ATENDENTE = "ATENDENTE"
 
 
+class TipoUnidade(str, Enum):
+    COMPLETA = "COMPLETA"
+    REDUZIDA = "REDUZIDA"
+
+
 class StatusPedido(str, Enum):
     CRIADO = "CRIADO"
     AGUARDANDO_PAGAMENTO = "AGUARDANDO_PAGAMENTO"
@@ -21,8 +26,3 @@ class StatusPagamento(str, Enum):
     PENDENTE = "PENDENTE"
     APROVADO = "APROVADO"
     RECUSADO = "RECUSADO"
-
-
-class TipoUnidade(str, Enum):
-    COMPLETA = "COMPLETA"
-    REDUZIDA = "REDUZIDA"

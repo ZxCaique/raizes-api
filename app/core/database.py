@@ -1,8 +1,14 @@
+from typing import Generator
+
 from sqlalchemy import create_engine
-from sqlalchemy.orm import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import DeclarativeBase, Session, sessionmaker
 
 from app.core.config import DATABASE_URL
+
+
+class Base(DeclarativeBase):
+    pass
+
 
 engine = create_engine(
     DATABASE_URL,
@@ -10,20 +16,16 @@ engine = create_engine(
 )
 
 SessionLocal = sessionmaker(
-    autocommit=False,
+    bind=engine,
     autoflush=False,
-    bind=engine
+    autocommit=False
 )
 
-Base = declarative_base()
 
-
-def get_db():
-
+def get_db() -> Generator[Session, None, None]:
     db = SessionLocal()
 
     try:
         yield db
-
     finally:
         db.close()
