@@ -22,8 +22,6 @@ git clone https://github.com/ZxCaique/raizes-api.git
 Ou faça o download do projeto em formato ZIP diretamente pelo GitHub.
 
 ---
-
----
 # 📚 Tecnologias Utilizadas
 
 * Python 3.12
