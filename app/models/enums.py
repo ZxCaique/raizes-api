@@ -22,6 +22,14 @@ class StatusPedido(str, Enum):
     CANCELADO = "CANCELADO"
 
 
+class CanalPedido(str, Enum):
+    APP = "APP"
+    TOTEM = "TOTEM"
+    BALCAO = "BALCAO"
+    PICKUP = "PICKUP"
+    WEB = "WEB"
+
+
 class StatusPagamento(str, Enum):
     PENDENTE = "PENDENTE"
     APROVADO = "APROVADO"

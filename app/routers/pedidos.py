@@ -3,6 +3,7 @@ from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
 from app.core.dependencies import usuario_logado
+from app.models.enums import CanalPedido
 from app.models.estoque import Estoque
 from app.models.item_pedido import ItemPedido
 from app.models.pedido import Pedido
@@ -35,6 +36,7 @@ def criar_pedido(
         pedido = Pedido(
             cliente_id=dados.cliente_id,
             unidade_id=dados.unidade_id,
+            canal_pedido=dados.canal_pedido,
             valor_total=0.0
         )
 
@@ -111,12 +113,20 @@ def criar_pedido(
 
 @router.get("/", response_model=list[PedidoResponse])
 def listar_pedidos(
+    canal_pedido: CanalPedido | None = None,
     usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
-    return db.query(Pedido).options(
+    query = db.query(Pedido).options(
         selectinload(Pedido.itens)
-    ).all()
+    )
+
+    if canal_pedido:
+        query = query.filter(
+            Pedido.canal_pedido == canal_pedido
+        )
+
+    return query.all()
 
 
 @router.get("/{pedido_id}", response_model=PedidoResponse)

@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.base import BaseModel
-from app.models.enums import StatusPedido
+from app.models.enums import CanalPedido, StatusPedido
 
 if TYPE_CHECKING:
     from app.models.cliente import Cliente
@@ -28,6 +28,11 @@ class Pedido(BaseModel, Base):
     unidade_id: Mapped[int] = mapped_column(
         Integer,
         ForeignKey("unidades.id"),
+        nullable=False
+    )
+
+    canal_pedido: Mapped[CanalPedido] = mapped_column(
+        Enum(CanalPedido),
         nullable=False
     )
 

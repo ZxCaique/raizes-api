@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from app.models.enums import StatusPedido
+from app.models.enums import CanalPedido, StatusPedido
 
 
 class ItemPedidoCreate(BaseModel):
@@ -11,6 +11,7 @@ class ItemPedidoCreate(BaseModel):
 class PedidoCreate(BaseModel):
     cliente_id: int
     unidade_id: int
+    canal_pedido: CanalPedido
     itens: list[ItemPedidoCreate]
 
 
@@ -29,6 +30,7 @@ class PedidoResponse(BaseModel):
     id: int
     cliente_id: int
     unidade_id: int
+    canal_pedido: CanalPedido
     status: StatusPedido
     valor_total: float
     itens: list[ItemPedidoResponse] = []
