@@ -2,20 +2,54 @@
 
 API REST desenvolvida em **Python** utilizando **FastAPI**, **SQLAlchemy** e **SQLite** para gerenciamento da Rede **Raízes do Nordeste**.
 
-O sistema permite o gerenciamento de clientes, produtos, categorias, unidades, estoque, pedidos, pagamentos, programa de fidelidade e autenticação via JWT.
+O sistema permite o gerenciamento de clientes, produtos, categorias, unidades, estoque, pedidos, pagamentos, programa de fidelidade, autenticação via JWT e suporte à multicanalidade.
+
+---
+
+# 📂 Repositório
+
+Código-fonte disponível em:
+
+**GitHub**
+
+https://github.com/ZxCaique/raizes-api
+
+Clone o projeto:
+
+```bash
+git clone https://github.com/ZxCaique/raizes-api.git
+```
+
+---
+
+# 🚀 Demonstração
+
+Após executar a aplicação, acesse:
+
+## Swagger
+
+```
+http://127.0.0.1:8000/docs
+```
+
+## ReDoc
+
+```
+http://127.0.0.1:8000/redoc
+```
 
 ---
 
 # 📚 Tecnologias Utilizadas
 
-* Python 3.12
-* FastAPI
-* SQLAlchemy 2.0
-* SQLite
-* Pydantic v2
-* Uvicorn
-* Passlib (bcrypt)
-* Python-Jose (JWT)
+- Python 3.12
+- FastAPI
+- SQLAlchemy 2.0
+- SQLite
+- Pydantic v2
+- Uvicorn
+- Passlib (bcrypt)
+- Python-Jose (JWT)
 
 ---
 
@@ -47,14 +81,14 @@ raizes-api/
 ## 1. Clonar o projeto
 
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/ZxCaique/raizes-api.git
 ```
 
 Ou faça o download do projeto em formato ZIP.
 
 ---
 
-## 2. Criar o ambiente virtual
+## 2. Criar ambiente virtual
 
 ```bash
 python -m venv .venv
@@ -62,7 +96,7 @@ python -m venv .venv
 
 ---
 
-## 3. Ativar o ambiente virtual
+## 3. Ativar ambiente virtual
 
 ### Windows (PowerShell)
 
@@ -78,7 +112,7 @@ python -m venv .venv
 
 ---
 
-## 4. Instalar as dependências
+## 4. Instalar dependências
 
 ```bash
 pip install -r requirements.txt
@@ -94,36 +128,18 @@ uvicorn app.main:app --reload
 
 ---
 
-# 📖 Documentação
-
-Após iniciar a aplicação, acesse:
-
-Swagger
-
-```
-http://127.0.0.1:8000/docs
-```
-
-Redoc
-
-```
-http://127.0.0.1:8000/redoc
-```
-
----
-
 # 🔐 Autenticação
 
-A API utiliza autenticação JWT.
+A API utiliza autenticação JWT para proteger os endpoints.
 
 Fluxo recomendado:
 
-1. Registrar usuário.
-2. Realizar login.
-3. Copiar o Access Token.
-4. Clicar em **Authorize** no Swagger.
-5. Informar o Token JWT.
-6. Utilizar as rotas protegidas.
+1. Registrar um usuário
+2. Realizar login
+3. Copiar o Access Token
+4. Clicar em **Authorize** no Swagger
+5. Informar o token JWT
+6. Utilizar normalmente as rotas protegidas
 
 ---
 
@@ -131,61 +147,65 @@ Fluxo recomendado:
 
 ## Usuários
 
-* Cadastro
-* Login
-* Autenticação JWT
+- Cadastro
+- Login
+- Autenticação JWT
 
 ## Clientes
 
-* Cadastro
-* Consulta
-* Atualização
-* Exclusão
+- Cadastro
+- Consulta
+- Atualização
+- Exclusão
 
 ## Categorias
 
-* CRUD completo
+- CRUD completo
 
 ## Produtos
 
-* CRUD completo
+- CRUD completo
 
 ## Unidades
 
-* CRUD completo
+- CRUD completo
 
 ## Estoque
 
-* Cadastro de estoque
-* Atualização de quantidade
-* Consulta de estoque
+- Cadastro
+- Atualização
+- Consulta geral
+- Consulta por unidade
+- Consulta por produto/unidade
+- Entrada de estoque
 
 ## Pedidos
 
-* Criação de pedidos
-* Controle de itens
-* Atualização de status
-* Registro do canal de origem do pedido
-* Consulta por canal e status
+- Criação de pedidos
+- Controle de itens
+- Atualização de status
+- Registro do canal de origem
+- Consulta por canal
+- Consulta por status
 
 ## Pagamentos
 
-* Pagamento mock
-* Registro da forma de pagamento
-* Geração de código de transação
+- Pagamento Mock
+- Registro da forma de pagamento
+- Código de transação
 
 ## Programa de Fidelidade
 
-* Cadastro
-* Consulta
-* Acúmulo de pontos
-* Níveis Bronze, Prata e Ouro
+- Cadastro
+- Consulta
+- Acúmulo de pontos
+- Níveis Bronze, Prata e Ouro
 
 ## Relatórios
 
-* Resumo geral
-* Total de vendas
-* Estoque baixo
+- Resumo geral
+- Total de vendas
+- Estoque baixo
 
 ---
 
@@ -193,17 +213,21 @@ Fluxo recomendado:
 
 A API implementa o conceito de multicanalidade conforme o estudo de caso.
 
-Cada pedido registra obrigatoriamente seu canal de origem por meio do campo `canalPedido`.
+Cada pedido registra obrigatoriamente seu canal de origem através do campo:
 
-Canais suportados:
+```
+canalPedido
+```
 
-* APP
-* TOTEM
-* BALCAO
-* PICKUP
-* WEB
+Canais disponíveis:
 
-Também é possível consultar pedidos por canal e status.
+- APP
+- TOTEM
+- BALCAO
+- PICKUP
+- WEB
+
+Também é possível filtrar pedidos por canal e status.
 
 Exemplo:
 
@@ -217,15 +241,15 @@ GET /pedidos?canalPedido=TOTEM&status=AGUARDANDO_PAGAMENTO
 
 Cada pedido registra a forma de pagamento escolhida.
 
-Formas disponíveis:
+Opções disponíveis:
 
-* MOCK
-* PIX
-* CARTAO_CREDITO
-* CARTAO_DEBITO
-* DINHEIRO
+- MOCK
+- PIX
+- CARTAO_CREDITO
+- CARTAO_DEBITO
+- DINHEIRO
 
-O endpoint de pagamento utiliza um gateway simulado (mock), retornando um código de transação para fins de teste.
+O endpoint de pagamento utiliza um gateway simulado (Mock), retornando um código de transação para fins de teste.
 
 ---
 
@@ -243,78 +267,57 @@ raizes.db
 
 # 📌 Principais Endpoints
 
-| Método | Endpoint                 |
-| ------ | ------------------------ |
-| POST   | /auth/registrar          |
-| POST   | /auth/login              |
-| GET    | /clientes                |
-| POST   | /clientes                |
-| GET    | /categorias              |
-| POST   | /categorias              |
-| GET    | /produtos                |
-| POST   | /produtos                |
-| GET    | /unidades                |
-| POST   | /unidades                |
-| GET    | /estoque                 |
-| POST   | /estoque                 |
-| GET    | /pedidos                 |
-| POST   | /pedidos                 |
-| POST   | /pagamentos/processar    |
-| GET    | /fidelidade/{cliente_id} |
-| GET    | /relatorios/resumo       |
+| Método | Endpoint |
+|---------|----------|
+| POST | /auth/registrar |
+| POST | /auth/login |
+| GET | /clientes |
+| POST | /clientes |
+| GET | /categorias |
+| POST | /categorias |
+| GET | /produtos |
+| POST | /produtos |
+| GET | /unidades |
+| POST | /unidades |
+| GET | /estoque |
+| GET | /estoque/unidade/{id} |
+| GET | /estoque/unidade/{id}/produto/{id} |
+| PATCH | /estoque/{id}/entrada |
+| POST | /estoque |
+| GET | /pedidos |
+| POST | /pedidos |
+| PATCH | /pedidos/{id}/status |
+| POST | /pagamentos/processar |
+| GET | /fidelidade/{cliente_id} |
+| POST | /fidelidade/{cliente_id}/adicionar-pontos |
+| GET | /relatorios/resumo |
+| GET | /relatorios/vendas |
+| GET | /relatorios/estoque-baixo |
 
 ---
 
 # 🧪 Execução dos Testes
 
-A validação da API foi realizada utilizando o **Postman**.
+Os testes da API foram realizados utilizando o **Postman**, conforme os requisitos da atividade prática.
 
-## Arquivos de Teste
+## Arquivos
 
-Os arquivos utilizados encontram-se na pasta:
+Na pasta:
 
 ```
 postman/
 ```
 
-Arquivos:
+estão disponíveis:
 
-* `raizes-api-postman-collection.json`
-* `raizes-api-postman-environment.json`
+- raizes-api-postman-collection.json
+- raizes-api-postman-environment.json
 
-Importe ambos no Postman antes da execução.
-
----
-
-## Ambiente
-
-1. Ative o ambiente virtual.
-
-```powershell
-.\.venv\Scripts\Activate.ps1
-```
-
-2. Instale as dependências.
-
-```bash
-pip install -r requirements.txt
-```
-
-3. Execute a API.
-
-```bash
-uvicorn app.main:app --reload
-```
-
-4. Utilize o ambiente:
-
-```
-http://127.0.0.1:8000
-```
+Importe ambos no Postman.
 
 ---
 
-## Ordem recomendada dos testes
+## Ordem recomendada
 
 Execute na seguinte sequência:
 
@@ -335,108 +338,114 @@ Execute na seguinte sequência:
 
 ## Seed
 
-Antes dos testes principais execute:
+Antes dos testes execute:
 
-* Seed 01 – Criar cliente
-* Seed 02 – Criar categoria
-* Seed 03 – Criar produto
-* Seed 04 – Criar unidade
-* Seed 05 – Criar estoque
+- Criar Cliente
+- Criar Categoria
+- Criar Produto
+- Criar Unidade
+- Criar Estoque
 
 ---
 
 ## Cenários implementados
 
-| ID  | Cenário                   | Resultado Esperado |
-| --- | ------------------------- | ------------------ |
-| T01 | Login válido              | 200 + access_token |
-| T02 | Acesso sem token          | 401/403            |
-| T03 | Cadastro de cliente       | 200                |
-| T04 | E-mail inválido           | 422                |
-| T05 | Pedido sem canalPedido    | 422                |
-| T06 | Produto inexistente       | 404                |
-| T08 | Pedido válido             | 200                |
-| T09 | Estoque insuficiente      | 400                |
-| T10 | Pagamento mock aprovado   | 200                |
-| T11 | Consulta por canal/status | 200                |
-| T12 | Relatório resumo          | 200                |
+| ID | Cenário | Resultado Esperado |
+|----|----------|-------------------|
+| T01 | Login válido | 200 + Access Token |
+| T02 | Acesso sem Token | 401 |
+| T03 | Cadastro de Cliente | 200 |
+| T04 | E-mail inválido | 422 |
+| T05 | Pedido sem canalPedido | 422 |
+| T06 | Produto inexistente | 404 |
+| T07 | Consulta de estoque por unidade | 200 |
+| T08 | Pedido válido | 200 |
+| T09 | Estoque insuficiente | 400 |
+| T10 | Pagamento Mock | 200 |
+| T11 | Consulta por canal/status | 200 |
+| T12 | Relatório resumo | 200 |
 
 ---
 
 ## Token JWT
 
-O token é obtido através do endpoint:
+O token é obtido através de:
 
 ```
 POST /auth/login
 ```
 
-O Postman salva automaticamente o token na variável:
+No Postman o token é salvo automaticamente na variável:
 
 ```
 {{token}}
 ```
 
-Caso seja necessário configurar manualmente, utilize:
+Caso seja necessário configurar manualmente:
 
 ```
 Authorization
+
 Bearer Token
+
 {{token}}
 ```
 
 ---
 
-## Reiniciando o banco
+## Reiniciando o Banco
 
-Caso seja necessário reiniciar os testes:
+Caso deseje reiniciar os testes:
 
-1. Exclua o arquivo:
+Excluir:
 
 ```
 raizes.db
 ```
 
-2. Execute novamente:
+Executar novamente:
 
 ```bash
 uvicorn app.main:app --reload
 ```
 
-O banco SQLite será recriado automaticamente.
+O banco será recriado automaticamente.
 
 ---
 
-# Observações
+# 📋 Observações
 
-* Os testes estão organizados em pastas no Postman conforme os módulos da aplicação.
-* O fluxo principal contempla autenticação, estoque, pedidos, pagamento mock, fidelidade e relatórios.
-* A autenticação utiliza JWT para proteger os endpoints.
-* O sistema implementa multicanalidade por meio do campo `canalPedido`.
-* Os pedidos podem ser filtrados por canal e status.
-* As formas de pagamento ficam registradas juntamente com o pedido.
+- A documentação da API está disponível via Swagger/OpenAPI.
+- Os testes encontram-se organizados em coleções do Postman.
+- Todos os endpoints protegidos utilizam autenticação JWT.
+- O sistema implementa multicanalidade através do campo **canalPedido**.
+- Os pedidos podem ser filtrados por canal e status.
+- O pagamento é processado por um gateway Mock.
+- O estoque é controlado por unidade, permitindo consultas específicas por unidade e produto.
 
 ---
 
-# Requisitos não implementados
+# ⚠️ Requisitos não implementados
 
-## Controle de perfis (403)
+## Controle de Perfis (403)
 
 A autenticação via JWT foi implementada.
 
-Entretanto, o controle de autorização baseado em perfis (ADMIN, GERENTE e ATENDENTE) não foi implementado nesta versão.
+Entretanto, o controle de autorização por perfil (ADMIN, GERENTE e ATENDENTE) ainda não foi implementado.
 
 ## Logs e Auditoria
 
-Não foi implementado mecanismo de logs ou auditoria.
+Não foi implementado mecanismo de logs e auditoria.
 
-A prioridade do desenvolvimento foi atender ao fluxo principal do sistema (autenticação, pedidos, pagamentos, fidelidade, estoque e multicanalidade).
+A prioridade do desenvolvimento foi atender ao fluxo principal do sistema, incluindo autenticação, estoque, pedidos, pagamentos, fidelidade e multicanalidade.
 
 ---
 
 # 👨‍💻 Desenvolvedor
 
-Projeto desenvolvido por **Caique Reis** para a disciplina **Projeto Multidisciplinar – Trilha Back-End**.
+**Caique Reis**
+
+Projeto desenvolvido para a disciplina **Projeto Multidisciplinar – Trilha Back-End**.
 
 ---
 
