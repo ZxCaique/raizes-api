@@ -26,6 +26,7 @@ from app.routers import (
     pedidos,
     pagamentos,
     fidelidade,
+    relatorios,
 )
 
 Base.metadata.create_all(bind=engine)
@@ -55,3 +56,4 @@ app.include_router(estoque.router)
 app.include_router(pedidos.router)
 app.include_router(pagamentos.router)
 app.include_router(fidelidade.router)
+app.include_router(relatorios.router)

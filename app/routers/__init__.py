@@ -7,3 +7,4 @@ from . import estoque
 from . import pedidos
 from . import pagamentos
 from . import fidelidade
+from . import relatorios
