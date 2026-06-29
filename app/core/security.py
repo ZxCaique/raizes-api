@@ -3,7 +3,11 @@ from datetime import datetime, timedelta
 from jose import jwt
 from passlib.context import CryptContext
 
-from app.core.config import SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from app.core.config import (
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+    ALGORITHM,
+    SECRET_KEY,
+)
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -18,6 +22,15 @@ def verificar_senha(senha: str, senha_hash: str) -> bool:
 
 def criar_token_acesso(data: dict) -> str:
     dados = data.copy()
-    expiracao = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+
+    expiracao = datetime.utcnow() + timedelta(
+        minutes=ACCESS_TOKEN_EXPIRE_MINUTES
+    )
+
     dados.update({"exp": expiracao})
-    return jwt.encode(dados, SECRET_KEY, algorithm=ALGORITHM)
+
+    return jwt.encode(
+        dados,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
