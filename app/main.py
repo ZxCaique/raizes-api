@@ -1,20 +1,21 @@
 from fastapi import FastAPI
 
+from app.core.config import API_TITLE, API_VERSION
 from app.core.database import Base, engine
 
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(
-    title="Raízes do Nordeste API",
-    version="1.0.0",
-    description="Sistema de gerenciamento da Rede Raízes do Nordeste"
+    title=API_TITLE,
+    version=API_VERSION
 )
 
 
-@app.get("/")
+@app.get("/", tags=["Sistema"])
 def home():
 
     return {
-        "message": "API Raízes do Nordeste",
-        "status": "Online"
+        "mensagem": "Bem-vindo à API Raízes do Nordeste",
+        "status": "online",
+        "versao": API_VERSION
     }

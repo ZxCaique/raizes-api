@@ -4,7 +4,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 
 DATABASE_URL = "sqlite:///./raizes.db"
 
-SECRET_KEY = "raizes-do-nordeste-secret-key"
+API_TITLE = "Raízes do Nordeste API"
+API_VERSION = "1.0.0"
+
+SECRET_KEY = "raizes-do-nordeste-2026"
 
 ALGORITHM = "HS256"
 
