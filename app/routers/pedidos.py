@@ -2,17 +2,29 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session, selectinload
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.estoque import Estoque
 from app.models.item_pedido import ItemPedido
 from app.models.pedido import Pedido
 from app.models.produto import Produto
-from app.schemas.pedido import AtualizarStatusPedido, PedidoCreate, PedidoResponse
+from app.schemas.pedido import (
+    AtualizarStatusPedido,
+    PedidoCreate,
+    PedidoResponse,
+)
 
-router = APIRouter(prefix="/pedidos", tags=["Pedidos"])
+router = APIRouter(
+    prefix="/pedidos",
+    tags=["Pedidos"]
+)
 
 
 @router.post("/", response_model=PedidoResponse)
-def criar_pedido(dados: PedidoCreate, db: Session = Depends(get_db)):
+def criar_pedido(
+    dados: PedidoCreate,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     if not dados.itens:
         raise HTTPException(
             status_code=400,
@@ -77,6 +89,12 @@ def criar_pedido(dados: PedidoCreate, db: Session = Depends(get_db)):
             Pedido.id == pedido.id
         ).first()
 
+        if not pedido_salvo:
+            raise HTTPException(
+                status_code=500,
+                detail="Erro ao recuperar pedido criado."
+            )
+
         return pedido_salvo
 
     except HTTPException:
@@ -92,14 +110,21 @@ def criar_pedido(dados: PedidoCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[PedidoResponse])
-def listar_pedidos(db: Session = Depends(get_db)):
+def listar_pedidos(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     return db.query(Pedido).options(
         selectinload(Pedido.itens)
     ).all()
 
 
 @router.get("/{pedido_id}", response_model=PedidoResponse)
-def buscar_pedido(pedido_id: int, db: Session = Depends(get_db)):
+def buscar_pedido(
+    pedido_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     pedido = db.query(Pedido).options(
         selectinload(Pedido.itens)
     ).filter(
@@ -107,7 +132,10 @@ def buscar_pedido(pedido_id: int, db: Session = Depends(get_db)):
     ).first()
 
     if not pedido:
-        raise HTTPException(status_code=404, detail="Pedido não encontrado.")
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido não encontrado."
+        )
 
     return pedido
 
@@ -116,12 +144,20 @@ def buscar_pedido(pedido_id: int, db: Session = Depends(get_db)):
 def atualizar_status(
     pedido_id: int,
     dados: AtualizarStatusPedido,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
-    pedido = db.query(Pedido).filter(Pedido.id == pedido_id).first()
+    pedido = db.query(Pedido).options(
+        selectinload(Pedido.itens)
+    ).filter(
+        Pedido.id == pedido_id
+    ).first()
 
     if not pedido:
-        raise HTTPException(status_code=404, detail="Pedido não encontrado.")
+        raise HTTPException(
+            status_code=404,
+            detail="Pedido não encontrado."
+        )
 
     pedido.status = dados.status
 

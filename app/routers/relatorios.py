@@ -2,17 +2,24 @@ from fastapi import APIRouter, Depends
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.cliente import Cliente
 from app.models.estoque import Estoque
 from app.models.pedido import Pedido
 from app.models.produto import Produto
 from app.models.unidade import Unidade
 
-router = APIRouter(prefix="/relatorios", tags=["Relatórios"])
+router = APIRouter(
+    prefix="/relatorios",
+    tags=["Relatórios"]
+)
 
 
 @router.get("/resumo")
-def resumo_geral(db: Session = Depends(get_db)):
+def resumo_geral(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     return {
         "total_clientes": db.query(Cliente).count(),
         "total_produtos": db.query(Produto).count(),
@@ -22,18 +29,26 @@ def resumo_geral(db: Session = Depends(get_db)):
 
 
 @router.get("/vendas")
-def relatorio_vendas(db: Session = Depends(get_db)):
+def relatorio_vendas(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     pedidos = db.query(Pedido).all()
 
     return {
         "quantidade_pedidos": len(pedidos),
-        "valor_total_vendido": sum(p.valor_total for p in pedidos),
+        "valor_total_vendido": sum(float(p.valor_total) for p in pedidos),
     }
 
 
 @router.get("/estoque-baixo")
-def relatorio_estoque_baixo(db: Session = Depends(get_db)):
-    itens = db.query(Estoque).filter(Estoque.quantidade <= 5).all()
+def relatorio_estoque_baixo(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    itens = db.query(Estoque).filter(
+        Estoque.quantidade <= 5
+    ).all()
 
     return [
         {

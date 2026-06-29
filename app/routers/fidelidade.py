@@ -2,19 +2,32 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.cliente import Cliente
 from app.models.fidelidade import Fidelidade
 from app.schemas.fidelidade import FidelidadeResponse
 
-router = APIRouter(prefix="/fidelidade", tags=["Fidelidade"])
+router = APIRouter(
+    prefix="/fidelidade",
+    tags=["Fidelidade"]
+)
 
 
 @router.post("/{cliente_id}/criar", response_model=FidelidadeResponse)
-def criar_fidelidade(cliente_id: int, db: Session = Depends(get_db)):
-    cliente = db.query(Cliente).filter(Cliente.id == cliente_id).first()
+def criar_fidelidade(
+    cliente_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    cliente = db.query(Cliente).filter(
+        Cliente.id == cliente_id
+    ).first()
 
     if not cliente:
-        raise HTTPException(status_code=404, detail="Cliente não encontrado.")
+        raise HTTPException(
+            status_code=404,
+            detail="Cliente não encontrado."
+        )
 
     fidelidade = db.query(Fidelidade).filter(
         Fidelidade.cliente_id == cliente_id
@@ -37,13 +50,20 @@ def criar_fidelidade(cliente_id: int, db: Session = Depends(get_db)):
 
 
 @router.get("/{cliente_id}", response_model=FidelidadeResponse)
-def buscar_fidelidade(cliente_id: int, db: Session = Depends(get_db)):
+def buscar_fidelidade(
+    cliente_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     fidelidade = db.query(Fidelidade).filter(
         Fidelidade.cliente_id == cliente_id
     ).first()
 
     if not fidelidade:
-        raise HTTPException(status_code=404, detail="Fidelidade não encontrada.")
+        raise HTTPException(
+            status_code=404,
+            detail="Fidelidade não encontrada."
+        )
 
     return fidelidade
 
@@ -52,6 +72,7 @@ def buscar_fidelidade(cliente_id: int, db: Session = Depends(get_db)):
 def adicionar_pontos(
     cliente_id: int,
     pontos: int,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     fidelidade = db.query(Fidelidade).filter(
@@ -59,7 +80,10 @@ def adicionar_pontos(
     ).first()
 
     if not fidelidade:
-        raise HTTPException(status_code=404, detail="Fidelidade não encontrada.")
+        raise HTTPException(
+            status_code=404,
+            detail="Fidelidade não encontrada."
+        )
 
     fidelidade.pontos_acumulados += pontos
 

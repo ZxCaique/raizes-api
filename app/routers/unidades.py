@@ -2,32 +2,58 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.unidade import Unidade
-from app.schemas.unidade import UnidadeCreate, UnidadeUpdate, UnidadeResponse
+from app.schemas.unidade import (
+    UnidadeCreate,
+    UnidadeResponse,
+    UnidadeUpdate,
+)
 
-router = APIRouter(prefix="/unidades", tags=["Unidades"])
+router = APIRouter(
+    prefix="/unidades",
+    tags=["Unidades"]
+)
 
 
 @router.post("/", response_model=UnidadeResponse)
-def criar_unidade(dados: UnidadeCreate, db: Session = Depends(get_db)):
+def criar_unidade(
+    dados: UnidadeCreate,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     unidade = Unidade(**dados.model_dump())
+
     db.add(unidade)
     db.commit()
     db.refresh(unidade)
+
     return unidade
 
 
 @router.get("/", response_model=list[UnidadeResponse])
-def listar_unidades(db: Session = Depends(get_db)):
+def listar_unidades(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     return db.query(Unidade).all()
 
 
 @router.get("/{unidade_id}", response_model=UnidadeResponse)
-def buscar_unidade(unidade_id: int, db: Session = Depends(get_db)):
-    unidade = db.query(Unidade).filter(Unidade.id == unidade_id).first()
+def buscar_unidade(
+    unidade_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    unidade = db.query(Unidade).filter(
+        Unidade.id == unidade_id
+    ).first()
 
     if not unidade:
-        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+        raise HTTPException(
+            status_code=404,
+            detail="Unidade não encontrada."
+        )
 
     return unidade
 
@@ -36,12 +62,18 @@ def buscar_unidade(unidade_id: int, db: Session = Depends(get_db)):
 def atualizar_unidade(
     unidade_id: int,
     dados: UnidadeUpdate,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
-    unidade = db.query(Unidade).filter(Unidade.id == unidade_id).first()
+    unidade = db.query(Unidade).filter(
+        Unidade.id == unidade_id
+    ).first()
 
     if not unidade:
-        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+        raise HTTPException(
+            status_code=404,
+            detail="Unidade não encontrada."
+        )
 
     for campo, valor in dados.model_dump(exclude_unset=True).items():
         setattr(unidade, campo, valor)
@@ -53,13 +85,24 @@ def atualizar_unidade(
 
 
 @router.delete("/{unidade_id}")
-def excluir_unidade(unidade_id: int, db: Session = Depends(get_db)):
-    unidade = db.query(Unidade).filter(Unidade.id == unidade_id).first()
+def excluir_unidade(
+    unidade_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    unidade = db.query(Unidade).filter(
+        Unidade.id == unidade_id
+    ).first()
 
     if not unidade:
-        raise HTTPException(status_code=404, detail="Unidade não encontrada.")
+        raise HTTPException(
+            status_code=404,
+            detail="Unidade não encontrada."
+        )
 
     db.delete(unidade)
     db.commit()
 
-    return {"mensagem": "Unidade removida com sucesso."}
+    return {
+        "mensagem": "Unidade removida com sucesso."
+    }

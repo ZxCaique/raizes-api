@@ -2,14 +2,26 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.estoque import Estoque
-from app.schemas.estoque import EstoqueCreate, EstoqueResponse, EstoqueUpdate
+from app.schemas.estoque import (
+    EstoqueCreate,
+    EstoqueResponse,
+    EstoqueUpdate,
+)
 
-router = APIRouter(prefix="/estoque", tags=["Estoque"])
+router = APIRouter(
+    prefix="/estoque",
+    tags=["Estoque"]
+)
 
 
 @router.post("/", response_model=EstoqueResponse)
-def criar_estoque(dados: EstoqueCreate, db: Session = Depends(get_db)):
+def criar_estoque(
+    dados: EstoqueCreate,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     estoque_existente = db.query(Estoque).filter(
         Estoque.produto_id == dados.produto_id,
         Estoque.unidade_id == dados.unidade_id
@@ -31,7 +43,10 @@ def criar_estoque(dados: EstoqueCreate, db: Session = Depends(get_db)):
 
 
 @router.get("/", response_model=list[EstoqueResponse])
-def listar_estoque(db: Session = Depends(get_db)):
+def listar_estoque(
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
     return db.query(Estoque).all()
 
 
@@ -39,12 +54,18 @@ def listar_estoque(db: Session = Depends(get_db)):
 def atualizar_estoque(
     estoque_id: int,
     dados: EstoqueUpdate,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
-    estoque = db.query(Estoque).filter(Estoque.id == estoque_id).first()
+    estoque = db.query(Estoque).filter(
+        Estoque.id == estoque_id
+    ).first()
 
     if not estoque:
-        raise HTTPException(status_code=404, detail="Estoque não encontrado.")
+        raise HTTPException(
+            status_code=404,
+            detail="Estoque não encontrado."
+        )
 
     estoque.quantidade = dados.quantidade
 
@@ -55,13 +76,24 @@ def atualizar_estoque(
 
 
 @router.delete("/{estoque_id}")
-def excluir_estoque(estoque_id: int, db: Session = Depends(get_db)):
-    estoque = db.query(Estoque).filter(Estoque.id == estoque_id).first()
+def excluir_estoque(
+    estoque_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    estoque = db.query(Estoque).filter(
+        Estoque.id == estoque_id
+    ).first()
 
     if not estoque:
-        raise HTTPException(status_code=404, detail="Estoque não encontrado.")
+        raise HTTPException(
+            status_code=404,
+            detail="Estoque não encontrado."
+        )
 
     db.delete(estoque)
     db.commit()
 
-    return {"mensagem": "Estoque removido com sucesso."}
+    return {
+        "mensagem": "Estoque removido com sucesso."
+    }

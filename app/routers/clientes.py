@@ -2,11 +2,12 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
 from app.core.database import get_db
+from app.core.dependencies import usuario_logado
 from app.models.cliente import Cliente
 from app.schemas.cliente import (
     ClienteCreate,
+    ClienteResponse,
     ClienteUpdate,
-    ClienteResponse
 )
 
 router = APIRouter(
@@ -18,6 +19,7 @@ router = APIRouter(
 @router.post("/", response_model=ClienteResponse)
 def criar_cliente(
     dados: ClienteCreate,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     cliente = Cliente(**dados.model_dump())
@@ -31,6 +33,7 @@ def criar_cliente(
 
 @router.get("/", response_model=list[ClienteResponse])
 def listar_clientes(
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     return db.query(Cliente).all()
@@ -39,6 +42,7 @@ def listar_clientes(
 @router.get("/{cliente_id}", response_model=ClienteResponse)
 def buscar_cliente(
     cliente_id: int,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     cliente = db.query(Cliente).filter(
@@ -58,6 +62,7 @@ def buscar_cliente(
 def atualizar_cliente(
     cliente_id: int,
     dados: ClienteUpdate,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     cliente = db.query(Cliente).filter(
@@ -84,6 +89,7 @@ def atualizar_cliente(
 @router.delete("/{cliente_id}")
 def excluir_cliente(
     cliente_id: int,
+    usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
     cliente = db.query(Cliente).filter(
