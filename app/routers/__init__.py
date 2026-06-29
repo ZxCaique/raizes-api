@@ -3,3 +3,7 @@ from . import clientes
 from . import categorias
 from . import produtos
 from . import unidades
+from . import estoque
+from . import pedidos
+from . import pagamentos
+from . import fidelidade

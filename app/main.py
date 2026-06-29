@@ -22,6 +22,10 @@ from app.routers import (
     categorias,
     produtos,
     unidades,
+    estoque,
+    pedidos,
+    pagamentos,
+    fidelidade,
 )
 
 Base.metadata.create_all(bind=engine)
@@ -29,7 +33,7 @@ Base.metadata.create_all(bind=engine)
 app = FastAPI(
     title=API_TITLE,
     version=API_VERSION,
-    description="API para gerenciamento da Rede Raízes do Nordeste."
+    description="API para gerenciamento da Rede Raízes do Nordeste.",
 )
 
 
@@ -38,7 +42,7 @@ def home():
     return {
         "mensagem": "Bem-vindo à API Raízes do Nordeste",
         "status": "online",
-        "versao": API_VERSION
+        "versao": API_VERSION,
     }
 
 
@@ -47,3 +51,7 @@ app.include_router(clientes.router)
 app.include_router(categorias.router)
 app.include_router(produtos.router)
 app.include_router(unidades.router)
+app.include_router(estoque.router)
+app.include_router(pedidos.router)
+app.include_router(pagamentos.router)
+app.include_router(fidelidade.router)
