@@ -50,6 +50,38 @@ def listar_estoque(
     return db.query(Estoque).all()
 
 
+@router.get("/unidade/{unidade_id}", response_model=list[EstoqueResponse])
+def listar_estoque_por_unidade(
+    unidade_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    return db.query(Estoque).filter(
+        Estoque.unidade_id == unidade_id
+    ).all()
+
+
+@router.get("/unidade/{unidade_id}/produto/{produto_id}", response_model=EstoqueResponse)
+def consultar_saldo_produto_unidade(
+    unidade_id: int,
+    produto_id: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    estoque = db.query(Estoque).filter(
+        Estoque.unidade_id == unidade_id,
+        Estoque.produto_id == produto_id
+    ).first()
+
+    if not estoque:
+        raise HTTPException(
+            status_code=404,
+            detail="Estoque não encontrado para este produto nesta unidade."
+        )
+
+    return estoque
+
+
 @router.put("/{estoque_id}", response_model=EstoqueResponse)
 def atualizar_estoque(
     estoque_id: int,
@@ -57,6 +89,12 @@ def atualizar_estoque(
     usuario=Depends(usuario_logado),
     db: Session = Depends(get_db)
 ):
+    if dados.quantidade < 0:
+        raise HTTPException(
+            status_code=400,
+            detail="Quantidade inválida."
+        )
+
     estoque = db.query(Estoque).filter(
         Estoque.id == estoque_id
     ).first()
@@ -68,6 +106,37 @@ def atualizar_estoque(
         )
 
     estoque.quantidade = dados.quantidade
+
+    db.commit()
+    db.refresh(estoque)
+
+    return estoque
+
+
+@router.patch("/{estoque_id}/entrada", response_model=EstoqueResponse)
+def entrada_estoque(
+    estoque_id: int,
+    quantidade: int,
+    usuario=Depends(usuario_logado),
+    db: Session = Depends(get_db)
+):
+    if quantidade <= 0:
+        raise HTTPException(
+            status_code=400,
+            detail="A quantidade de entrada deve ser maior que zero."
+        )
+
+    estoque = db.query(Estoque).filter(
+        Estoque.id == estoque_id
+    ).first()
+
+    if not estoque:
+        raise HTTPException(
+            status_code=404,
+            detail="Estoque não encontrado."
+        )
+
+    estoque.quantidade += quantidade
 
     db.commit()
     db.refresh(estoque)
