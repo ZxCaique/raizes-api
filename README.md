@@ -223,7 +223,7 @@ raizes.db
 
 # 👨‍💻 Desenvolvedor
 
-Projeto desenvolvido por **Caique Reis** como trabalho acadêmico da disciplina de Desenvolvimento Back-end.
+Projeto desenvolvido por **Caique Reis** como trabalho acadêmico da disciplina Projeto: Desenvolvimento Back-end.
 
 ---
 
