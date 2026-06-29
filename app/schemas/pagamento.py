@@ -1,19 +1,21 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.enums import StatusPagamento
+from app.models.enums import FormaPagamento, StatusPagamento
 
 
 class PagamentoCreate(BaseModel):
-    pedido_id: int
+    pedido_id: int = Field(alias="pedidoId")
+
+    model_config = ConfigDict(populate_by_name=True)
 
 
 class PagamentoResponse(BaseModel):
     id: int
-    pedido_id: int
+    pedido_id: int = Field(alias="pedidoId")
+    forma_pagamento: FormaPagamento = Field(alias="formaPagamento")
     gateway: str
     status: StatusPagamento
     valor: float
-    codigo_transacao: str | None = None
+    codigo_transacao: str | None = Field(default=None, alias="codigoTransacao")
 
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True, populate_by_name=True)

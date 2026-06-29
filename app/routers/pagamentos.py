@@ -41,6 +41,7 @@ def processar_pagamento(
 
     pagamento = Pagamento(
         pedido_id=pedido.id,
+        forma_pagamento=pedido.forma_pagamento,
         valor=float(pedido.valor_total),
         status=StatusPagamento.APROVADO,
         codigo_transacao=str(uuid.uuid4())

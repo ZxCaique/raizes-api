@@ -7,7 +7,7 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from app.core.database import Base
 from app.models.base import BaseModel
-from app.models.enums import CanalPedido, StatusPedido
+from app.models.enums import CanalPedido, FormaPagamento, StatusPedido
 
 if TYPE_CHECKING:
     from app.models.cliente import Cliente
@@ -19,46 +19,25 @@ if TYPE_CHECKING:
 class Pedido(BaseModel, Base):
     __tablename__ = "pedidos"
 
-    cliente_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("clientes.id"),
-        nullable=False
-    )
+    cliente_id: Mapped[int] = mapped_column(Integer, ForeignKey("clientes.id"), nullable=False)
+    unidade_id: Mapped[int] = mapped_column(Integer, ForeignKey("unidades.id"), nullable=False)
 
-    unidade_id: Mapped[int] = mapped_column(
-        Integer,
-        ForeignKey("unidades.id"),
-        nullable=False
-    )
-
-    canal_pedido: Mapped[CanalPedido] = mapped_column(
-        Enum(CanalPedido),
-        nullable=False
-    )
+    canal_pedido: Mapped[CanalPedido] = mapped_column(Enum(CanalPedido), nullable=False)
+    forma_pagamento: Mapped[FormaPagamento] = mapped_column(Enum(FormaPagamento), nullable=False)
 
     status: Mapped[StatusPedido] = mapped_column(
         Enum(StatusPedido),
-        default=StatusPedido.CRIADO
+        default=StatusPedido.AGUARDANDO_PAGAMENTO
     )
 
-    valor_total: Mapped[float] = mapped_column(
-        Float,
-        default=0.0
-    )
+    valor_total: Mapped[float] = mapped_column(Float, default=0.0)
 
-    cliente: Mapped["Cliente"] = relationship(
-        back_populates="pedidos"
-    )
-
-    unidade: Mapped["Unidade"] = relationship(
-        back_populates="pedidos"
-    )
-
+    cliente: Mapped["Cliente"] = relationship(back_populates="pedidos")
+    unidade: Mapped["Unidade"] = relationship(back_populates="pedidos")
     itens: Mapped[list["ItemPedido"]] = relationship(
         back_populates="pedido",
         cascade="all, delete-orphan"
     )
-
     pagamento: Mapped["Pagamento | None"] = relationship(
         back_populates="pedido",
         uselist=False

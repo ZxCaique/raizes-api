@@ -12,6 +12,22 @@ class TipoUnidade(str, Enum):
     REDUZIDA = "REDUZIDA"
 
 
+class CanalPedido(str, Enum):
+    APP = "APP"
+    TOTEM = "TOTEM"
+    BALCAO = "BALCAO"
+    PICKUP = "PICKUP"
+    WEB = "WEB"
+
+
+class FormaPagamento(str, Enum):
+    MOCK = "MOCK"
+    PIX = "PIX"
+    CARTAO_CREDITO = "CARTAO_CREDITO"
+    CARTAO_DEBITO = "CARTAO_DEBITO"
+    DINHEIRO = "DINHEIRO"
+
+
 class StatusPedido(str, Enum):
     CRIADO = "CRIADO"
     AGUARDANDO_PAGAMENTO = "AGUARDANDO_PAGAMENTO"
@@ -20,14 +36,6 @@ class StatusPedido(str, Enum):
     PRONTO = "PRONTO"
     ENTREGUE = "ENTREGUE"
     CANCELADO = "CANCELADO"
-
-
-class CanalPedido(str, Enum):
-    APP = "APP"
-    TOTEM = "TOTEM"
-    BALCAO = "BALCAO"
-    PICKUP = "PICKUP"
-    WEB = "WEB"
 
 
 class StatusPagamento(str, Enum):
